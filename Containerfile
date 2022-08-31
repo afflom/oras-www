@@ -5,6 +5,7 @@ WORKDIR /
 RUN dnf install -y\
         python\
         pip\
+        go\
         git &&\
     git clone https://github.com/oras-project/oras-www.git
 
@@ -20,6 +21,8 @@ RUN tar -xzvf client_0.2.0_linux_amd64.tar.gz client-linux-amd64 &&\
 
 RUN curl -L https://github.com/caddyserver/caddy/releases/download/v2.5.2/caddy_2.5.2_linux_amd64.tar.gz --output caddy.tar.gz &&\
     tar -xzvf caddy.tar.gz
+
+RUN GOBIN=$PWD go install github.com/google/go-containerregistry/cmd/registry@latest
 
 RUN mkdir push &&\
     cp -R site push/build_local &&\
@@ -44,4 +47,5 @@ COPY --from=build /oras-www/dataset-config.yaml .
 COPY --from=build /oras-www/client-push.sh .
 COPY --from=build /oras-www/client-pull.sh .
 COPY --from=build /oras-www/index.html .
+COPY --from=build /oras-www/registry .
 

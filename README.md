@@ -1,4 +1,45 @@
-# oras-www
+# ORAS community meeting demo
+
+This repo is the demo of an early version of the uor client for the oras community meeting.
+
+## Overview
+
+This demo starts an OCI registry (go-containerregistry), pushes a UOR Collection to that registry, pulls subsets of the published content from the registry, and then serves that content (with caddy). Once the website is verified, a different subset of the published content is retrieved and served. 
+
+## Demo instructions
+
+You may need to tweak some ports/commands for your environment. Take a look at the demo push/pull scripts for UOR Client CLI usage. 
+
+1. Build the demo environment
+`docker build -f Containerfile . -t localhost/oras-www:demo`
+
+2. Enter the demo
+`docker run --network=host -it localhost/oras-www:demo bash`
+
+3. Make a registry available if needed
+`./registry -port 5001 &`
+
+4. Swap out the dev index.html
+`cp  index.html push/build_local/`
+
+5. Publish the Collection 
+`./client-push.sh localhost:5001/oras:v1 --plain-http=true`
+
+6. View the Collection Manifest
+`curl localhost:5001/v2/oras/manifests/v1 | jq`
+
+7. Pull the dev Site
+`./client-pull.sh localhost:5001/oras:v1 demo dev --plain-http=true`
+
+8. Switch to browser and verify site has very few features enabled
+
+9. Pull the prod Site
+`./client-pull.sh localhost:5001/oras:v1 demo prod --plain-http=true`
+
+10. Verify prod site in browser
+
+
+# 
 
 Source for ORAS website and documentation
 
